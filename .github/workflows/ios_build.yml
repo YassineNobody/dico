@@ -18,6 +18,7 @@ jobs:
         with:
           flutter-version: '3.24.3'
           channel: 'stable'
+          architecture: x64
 
       - name: Get dependencies
         run: flutter pub get
