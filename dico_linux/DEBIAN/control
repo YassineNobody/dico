@@ -1,0 +1,8 @@
+Package: dico
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Yass <louartanie@gmail.com>
+Description: Dictionnaire Français–Arabe développé avec Flutter.
+

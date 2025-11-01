@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Dico
+Comment=Dictionnaire Français–Arabe
+Exec=dico
+Icon=/opt/dico/data/flutter_assets/assets/icon/app_icon.png
+Terminal=false
+Type=Application
+Categories=Education;
+StartupWMClass=dico
