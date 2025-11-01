@@ -13,19 +13,23 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # 🧩 Installer manuellement Flutter 3.27.1 (qui contient Dart 3.9.2)
+      # 🧩 Installer manuellement Flutter 3.27.1 (Dart 3.9.2)
       - name: Install Flutter manually
         run: |
           git clone https://github.com/flutter/flutter.git -b 3.27.1
-          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+          export PATH="$PATH:$(pwd)/flutter/bin"
           flutter --version
           dart --version
 
       - name: Get dependencies
-        run: flutter pub get
+        run: |
+          export PATH="$PATH:$(pwd)/flutter/bin"
+          flutter pub get
 
       - name: Build iOS app (no signing)
-        run: flutter build ipa --no-codesign
+        run: |
+          export PATH="$PATH:$(pwd)/flutter/bin"
+          flutter build ipa --no-codesign
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
