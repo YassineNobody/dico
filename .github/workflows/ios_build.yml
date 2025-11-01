@@ -1,4 +1,4 @@
-name: Build Flutter iOS (no codesign)
+name: Build Flutter iOS (manual install, no codesign)
 
 on:
   push:
@@ -7,24 +7,17 @@ on:
 
 jobs:
   build:
-    # ✅ On reste sur macOS 13 (Intel) pour éviter le Flutter ARM64 buggé
     runs-on: macos-13
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # ✅ Installer Flutter 3.24.3 version x64 (Intel)
-      - name: Setup Flutter (x64)
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.24.3"
-          channel: "stable"
-          architecture: x64
-          cache: false
-
-      - name: Verify Flutter & Dart versions
+      # 🧩 Installer manuellement Flutter 3.27.1 (qui contient Dart 3.9.2)
+      - name: Install Flutter manually
         run: |
+          git clone https://github.com/flutter/flutter.git -b 3.27.1
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
           flutter --version
           dart --version
 
