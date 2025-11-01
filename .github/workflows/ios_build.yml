@@ -7,18 +7,20 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    # ✅ On reste sur macOS 13 (Intel) pour éviter le Flutter ARM64 buggé
+    runs-on: macos-13
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # 🧩 Télécharger la bonne version Flutter manuellement
-      - name: Setup Flutter (force correct version)
+      # ✅ Installer Flutter 3.24.3 version x64 (Intel)
+      - name: Setup Flutter (x64)
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.24.3"
           channel: "stable"
+          architecture: x64
           cache: false
 
       - name: Verify Flutter & Dart versions
