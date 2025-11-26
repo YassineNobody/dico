@@ -1,38 +1,36 @@
 name: Build Flutter iOS (manual install, no codesign)
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:   # ➜ Permet de lancer le build manuellement
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-13   # Mac moderne compatible Xcode 15+
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # 🧩 Installer manuellement Flutter 3.27.1 (Dart 3.9.2)
+      # 🧩 Installer Flutter 3.27.1 (compatible Dart 3.9+)
       - name: Install Flutter manually
         run: |
           git clone https://github.com/flutter/flutter.git -b 3.27.1
-          export PATH="$PATH:$(pwd)/flutter/bin"
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
           flutter --version
           dart --version
 
-      - name: Get dependencies
+      - name: Flutter pub get
         run: |
-          export PATH="$PATH:$(pwd)/flutter/bin"
           flutter pub get
 
-      - name: Build iOS app (no signing)
+      # 🛠 Construire l’IPA sans signature (no codesign)
+      - name: Build iOS IPA (unsigned)
         run: |
-          export PATH="$PATH:$(pwd)/flutter/bin"
-          flutter build ipa --no-codesign
+          flutter build ipa --release --no-codesign
 
-      - name: Upload build artifact
+      # ⬆️ Upload Runner.ipa pour téléchargement
+      - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ios-unsigned
-          path: build/ios/ipa
+          name: ios-ipa
+          path: build/ios/ipa/Runner.ipa
