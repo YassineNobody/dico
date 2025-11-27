@@ -7,6 +7,7 @@ version: 1.0.0+1
 environment:
   sdk: ">=3.6.0 <4.0.0"
 
+
 dependencies:
   flutter:
     sdk: flutter
@@ -20,14 +21,13 @@ dependencies:
   flutter_screenutil: ^5.9.0
   cupertino_icons: ^1.0.8
 
-  sqflite: 2.3.0
-  sqflite_common_ffi: 2.3.4
-
+  sqflite: ^2.3.0
+  sqflite_common_ffi: ^2.3.4
   path: 1.9.0
 
-  # Drift compatible Dart 3.6
-  drift: 2.18.0
-  drift_flutter: 0.2.0   # <= IMPORTANT !!!
+  # Drift runtime only (PAS build_runner)
+  drift: ^2.29.0
+  drift_flutter: ^0.2.7
 
   flutter_local_notifications: ^17.1.2
   permission_handler: ^11.3.1
@@ -41,11 +41,6 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
-  # Drift dev compatible Dart 3.6
-  drift_dev: 2.18.0
-
-  # build_runner compatible drift_dev 2.18.0
-  build_runner: 2.4.6
 
 flutter:
   uses-material-design: true
