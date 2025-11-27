@@ -11,26 +11,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Installer Flutter 3.27.1 manuellement
-      - name: Install Flutter 3.27.1
+      # Étape 1 : Installer Flutter 3.27.1
+      - name: Download Flutter SDK (3.27.1)
         run: |
           git clone https://github.com/flutter/flutter.git -b 3.27.1
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
-          flutter --version
 
-      # Récupérer les dépendances
+      # Étape 2 : Vérifier que Flutter est dispo (PATH appliqué)
+      - name: Flutter version
+        run: flutter --version
+
+      # Pub get
       - name: Pub get
         run: flutter pub get
 
-      # Nettoyer iOS
+      # Clean iOS
       - name: Flutter clean
         run: flutter clean
 
-      # Build IPA sans signature
+      # Build IPA
       - name: Build iOS IPA
         run: flutter build ipa --release --no-codesign
 
-      # Upload artefact IPA
+      # Upload artifact
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
