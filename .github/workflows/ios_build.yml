@@ -1,4 +1,4 @@
-name: iOS Build (No Codesign)
+name: Build iOS IPA
 
 on:
   workflow_dispatch:
@@ -8,23 +8,27 @@ jobs:
     runs-on: macos-13
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: "3.27.1"
+          flutter-version: 3.27.1
+          git-source: https://github.com/flutter/flutter.git
+
+      - name: Check Dart version
+        run: dart --version
 
       - name: Flutter Pub Get
         run: flutter pub get
 
-      - name: Build IPA (no codesign)
-        run: flutter build ipa --release --no-codesign
+      - name: Build iOS IPA
+        run: flutter build ipa --release
 
-      - name: Upload IPA Artifact
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-ipa
-          path: build/ios/ipa
+          name: app-ipa
+          path: build/ios/ipa/*.ipa
