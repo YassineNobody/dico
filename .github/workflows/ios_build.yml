@@ -1,31 +1,45 @@
-name: build_ios
+name: Build iOS (IPA unsigned)
 
 on:
   workflow_dispatch:
 
 jobs:
-  build_ios:
-    runs-on: macos-latest
+  ios-build:
+    runs-on: macos-13
 
     steps:
-      - name: Checkout
+      # 1️⃣ Checkout du projet
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Flutter (3.27.1)
+      # 2️⃣ Installer Flutter 3.27.1 + Dart 3.6.0 (exactement comme ton Mac)
+      - name: Install Flutter 3.27.1
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.1'
-          channel: stable
-          architecture: x64
+          flutter-version: "3.27.1"
+          channel: "stable"
+          architecture: x64       # IMPORTANT
+          cache: false
 
-      - name: Flutter pub get
+      # 3️⃣ Afficher la version (debug)
+      - name: Flutter version
+        run: flutter --version
+
+      # 4️⃣ Installer les dépendances
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Build IPA
-        run: flutter build ipa --release
+      # 5️⃣ Générer le code Drift
+      - name: Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
 
+      # 6️⃣ Build IPA non signé
+      - name: Build IPA (unsigned)
+        run: flutter build ipa --release --no-codesign
+
+      # 7️⃣ Upload IPA en artifact
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-build
+          name: ios-ipa
           path: build/ios/ipa/
