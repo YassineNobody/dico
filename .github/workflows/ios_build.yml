@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build IPA (manual Flutter install)
 
 on:
   workflow_dispatch:
@@ -11,21 +11,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.27.1
-          git-source: https://github.com/flutter/flutter.git
+      # 🔥 Installer Flutter manuellement (pas de Subosito)
+      - name: Install Flutter manually
+        run: |
+          git clone https://github.com/flutter/flutter.git -b 3.27.1
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+          echo "$PWD/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
 
-      - name: Check Dart version
-        run: dart --version
+      - name: Check versions
+        run: |
+          flutter --version
+          dart --version
 
-      - name: Flutter Pub Get
+      - name: Flutter pub get
         run: flutter pub get
 
       - name: Build iOS IPA
-        run: flutter build ipa --release
+        run: flutter build ipa --release --no-codesign
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
