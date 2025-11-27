@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   provider: ^6.1.2
   font_awesome_flutter: ^10.7.0
   lucide_icons: ^0.257.0
@@ -19,26 +20,34 @@ dependencies:
   flutter_screenutil: ^5.9.0
   cupertino_icons: ^1.0.8
 
-  # ❗️ REMPLACE ICI → compatible Dart 3.6
+  # SQLite + Drift
   sqflite: 2.3.3+1
   sqflite_common_ffi: 2.3.4
-
   path: ^1.9.0
+
+  # Drift ORM (version correcte et compatible)
   drift: ^2.29.0
   drift_flutter: ^0.2.7
+
   flutter_local_notifications: ^17.1.2
   permission_handler: ^11.3.1
   path_provider: ^2.1.2
   file_picker: ^8.0.3
   flutter_file_dialog: ^3.0.2
+
   flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^5.0.0
-  drift_dev: 2.13.0
-  build_runner: 2.4.10
+
+  # ❗️ Correction ici : drift_dev doit être ALIGNÉ avec drift
+  drift_dev: ^2.29.0
+
+  # ❗️ Compatible Dart 3.6
+  build_runner: ^2.4.6
 
 flutter:
   uses-material-design: true
