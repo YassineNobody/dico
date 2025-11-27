@@ -21,7 +21,9 @@ class AddWordsScreen extends StatefulWidget {
 class _AddWordsScreenState extends State<AddWordsScreen>
     with WidgetsBindingObserver {
   final List<WordFormEntry> _entries = [WordFormEntry()];
-  final List<ExpansibleController> _controllers = [ExpansibleController()];
+  final List<ExpansionTileController> _controllers = [
+    ExpansionTileController()
+  ];
 
   String? errorForm;
   String? errorProvider;
@@ -71,7 +73,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
   void _resetForm() {
     _disposeControllers();
     _entries.add(WordFormEntry());
-    _controllers.add(ExpansibleController());
+    _controllers.add(ExpansionTileController());
     errorForm = null;
     errorProvider = null;
     if (mounted) setState(() {});
@@ -80,7 +82,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
   void _addNewEntry() {
     setState(() {
       _entries.add(WordFormEntry());
-      _controllers.add(ExpansibleController());
+      _controllers.add(ExpansionTileController());
       _clearErrors();
     });
   }
@@ -119,7 +121,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
       await provider.addWord(word);
       entry.isSaved = true;
 
-      // ✅ Ferme automatiquement l'accordéon du mot enregistré
+      // Ferme automatiquement
       _controllers[index].collapse();
 
       setState(() => errorForm = null);
@@ -148,7 +150,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
       canPop: true,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) {
-          _resetForm(); // 🔄 Reset à la sortie
+          _resetForm();
         }
       },
       child: Scaffold(
@@ -185,9 +187,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
                   Container(
                     alignment: AlignmentGeometry.centerLeft,
                     child: TextButton.icon(
-                      onPressed: () {
-                        context.go("/");
-                      },
+                      onPressed: () => context.go("/"),
                       icon: const Icon(FontAwesomeIcons.arrowLeft),
                       label: Text(
                         "Retour",
@@ -198,7 +198,8 @@ class _AddWordsScreenState extends State<AddWordsScreen>
                       ),
                     ),
                   ),
-                  SizedBox(height: 25),
+
+                  const SizedBox(height: 25),
 
                   Text(
                     "Ajouter des mots",
@@ -210,9 +211,9 @@ class _AddWordsScreenState extends State<AddWordsScreen>
                       color: const Color.fromARGB(255, 0, 21, 143),
                     ),
                   ),
-                  SizedBox(height: 25),
 
-                  // 🔹 Entrées
+                  const SizedBox(height: 25),
+
                   ...List.generate(
                     _entries.length,
                     (index) => _buildEntryForm(
@@ -224,7 +225,6 @@ class _AddWordsScreenState extends State<AddWordsScreen>
 
                   const SizedBox(height: 24),
 
-                  // 🔹 Bouton de reset
                   Center(
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
@@ -254,28 +254,30 @@ class _AddWordsScreenState extends State<AddWordsScreen>
           },
         ),
 
-        // 🔹 Bouton flottant d’ajout
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton:
             (_entries.isNotEmpty &&
                 _entries.last.canSubmit &&
                 _entries.last.isSaved)
-            ? AnimatedPadding(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeOut,
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom + 10
-                      : 70,
-                  right: 8,
-                ),
-                child: FloatingActionButton.extended(
-                  onPressed: _addNewEntry,
-                  icon: const Icon(Icons.add),
-                  label: Text("Nouveau mot", style: GoogleFonts.montserrat()),
-                ),
-              )
-            : null,
+                ? AnimatedPadding(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeOut,
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom > 0
+                          ? MediaQuery.of(context).viewInsets.bottom + 10
+                          : 70,
+                      right: 8,
+                    ),
+                    child: FloatingActionButton.extended(
+                      onPressed: _addNewEntry,
+                      icon: const Icon(Icons.add),
+                      label: Text(
+                        "Nouveau mot",
+                        style: GoogleFonts.montserrat(),
+                      ),
+                    ),
+                  )
+                : null,
       ),
     );
   }
@@ -283,7 +285,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
   Widget _buildEntryForm(
     WordFormEntry entry,
     int index,
-    ExpansibleController controller,
+    ExpansionTileController controller,
   ) {
     entry.sourceController.addListener(() => setState(() {}));
     entry.translationController.addListener(() => setState(() {}));
@@ -305,14 +307,15 @@ class _AddWordsScreenState extends State<AddWordsScreen>
           ),
           backgroundColor: Colors.white,
           collapsedBackgroundColor: Colors.white,
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          childrenPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          tilePadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          childrenPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           title: Text(
             "Mot ${index + 1}",
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.w500,
+            ),
           ),
           subtitle: entry.isSaved
               ? Text(
@@ -321,7 +324,9 @@ class _AddWordsScreenState extends State<AddWordsScreen>
                 )
               : Text(
                   "Non enregistré",
-                  style: GoogleFonts.montserrat(color: Colors.grey.shade600),
+                  style: GoogleFonts.montserrat(
+                    color: Colors.grey.shade600,
+                  ),
                 ),
           children: [
             Column(
@@ -342,10 +347,13 @@ class _AddWordsScreenState extends State<AddWordsScreen>
                       ? () => _saveEntry(entry, index)
                       : null,
                   icon: const Icon(Icons.save),
-                  label: Text("Enregistrer", style: GoogleFonts.montserrat()),
+                  label: Text(
+                    "Enregistrer",
+                    style: GoogleFonts.montserrat(),
+                  ),
                 ),
               ],
-            ),
+            )
           ],
         ),
       ),
@@ -357,7 +365,9 @@ class _AddWordsScreenState extends State<AddWordsScreen>
       controller: controller,
       decoration: InputDecoration(
         hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
   }
@@ -369,11 +379,15 @@ class _AddWordsScreenState extends State<AddWordsScreen>
       value: current,
       isExpanded: true,
       dropdownColor: Colors.white,
-      underline: Container(height: 1, color: Colors.grey.shade300),
+      underline: Container(
+        height: 1,
+        color: Colors.grey.shade300,
+      ),
       items: Language.values.map((lang) {
         final isDisabled = isSource
             ? lang == entry.targetLang
             : lang == entry.sourceLang;
+
         return DropdownMenuItem(
           value: isDisabled ? null : lang,
           enabled: !isDisabled,
@@ -397,6 +411,7 @@ class _AddWordsScreenState extends State<AddWordsScreen>
       }).toList(),
       onChanged: (lang) {
         if (lang == null) return;
+
         setState(() {
           if (isSource) {
             entry.sourceLang = lang;
@@ -424,7 +439,10 @@ class _AddWordsScreenState extends State<AddWordsScreen>
       value: entry.wordType,
       isExpanded: true,
       dropdownColor: Colors.white,
-      underline: Container(height: 1, color: Colors.grey.shade300),
+      underline: Container(
+        height: 1,
+        color: Colors.grey.shade300,
+      ),
       items: WordType.values.map((type) {
         return DropdownMenuItem(
           value: type,
@@ -434,8 +452,10 @@ class _AddWordsScreenState extends State<AddWordsScreen>
           ),
         );
       }).toList(),
-      onChanged: (t) {
-        if (t != null) setState(() => entry.wordType = t);
+      onChanged: (newType) {
+        if (newType != null) {
+          setState(() => entry.wordType = newType);
+        }
       },
     );
   }
