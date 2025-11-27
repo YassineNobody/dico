@@ -11,34 +11,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ⚠️ Installer FVM
-      - name: Install FVM
-        run: dart pub global activate fvm
-
-      # ⚠️ Installer Flutter 3.27.1 via FVM
+      # Installer Flutter 3.27.1 manuellement
       - name: Install Flutter 3.27.1
-        run: fvm install 3.27.1
-
-      # ⚠️ Dire à FVM d'utiliser cette version dans le projet
-      - name: Use Flutter 3.27.1
-        run: fvm use 3.27.1
-
-      # ⚠️ Ajouter Flutter au PATH
-      - name: Add Flutter to PATH
-        run: echo "$HOME/fvm/versions/3.27.1/bin" >> $GITHUB_PATH
-
-      # ⚠️ Clean + Pub get
-      - name: Get packages
         run: |
-          fvm flutter clean
-          fvm flutter pub get
+          git clone https://github.com/flutter/flutter.git -b 3.27.1
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+          flutter --version
 
-      # ⚠️ Build IPA
-      - name: Build iOS IPA (unsigned)
-        run: |
-          fvm flutter build ipa --release --no-codesign
+      # Récupérer les dépendances
+      - name: Pub get
+        run: flutter pub get
 
-      # ⚠️ Upload
+      # Nettoyer iOS
+      - name: Flutter clean
+        run: flutter clean
+
+      # Build IPA sans signature
+      - name: Build iOS IPA
+        run: flutter build ipa --release --no-codesign
+
+      # Upload artefact IPA
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
